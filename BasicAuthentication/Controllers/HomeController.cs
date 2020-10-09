@@ -12,6 +12,12 @@ namespace Authentication.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IAuthorizationService _authorizationService;
+
+        public HomeController(IAuthorizationService authorizationService)
+        {
+            _authorizationService = authorizationService;
+        }
         public IActionResult Index()
         {
             return View();
@@ -21,6 +27,19 @@ namespace Authentication.Controllers
         public IActionResult Secret()
         {
             return View();
+        } 
+        
+        [Authorize(Policy = "Claim.DoB")] /// guard an action = are you allowed ?
+        public IActionResult SecretPolicy()
+        {
+            return View("Secret");
+        } 
+        
+        
+        [Authorize(Roles = "Admin")] /// guard an action = are you allowed ?
+        public IActionResult SecretRole()
+        {
+            return View("Secret");
         }
 
         public IActionResult Authenticate()
@@ -29,6 +48,8 @@ namespace Authentication.Controllers
             {
                 new Claim(ClaimTypes.Name,"Bob"),
                 new Claim(ClaimTypes.Email ,"Bob@fmail.com"),
+                new Claim(ClaimTypes.DateOfBirth ,"11/11/2000"),
+                new Claim(ClaimTypes.Role ,"Admin"),
                 new Claim("Grandma.Says" ,"Very nice boi.")
 
             };
@@ -49,6 +70,27 @@ namespace Authentication.Controllers
 
             return RedirectToAction("Index");
 
+        }
+
+
+        public async Task< IActionResult> DoStuff(
+            [FromServices] IAuthorizationService authorizationService)
+        {
+
+            //FromService Dependency Injection in Method
+
+            var builder = new AuthorizationPolicyBuilder("Schema");
+            var customPolicy = builder.RequireClaim("Hello").Build();
+
+            //await _authorizationService.AuthorizeAsync(User, "Claim.DoB"); //HttpContext.User
+            var result = await _authorizationService.AuthorizeAsync(User, customPolicy); //HttpContext.User
+
+            if(result.Succeeded)
+            {
+                return View("Index");
+            }
+
+            return View("Index");
         }
 
     }
