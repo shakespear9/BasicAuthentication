@@ -9,9 +9,9 @@ namespace IdentityExample.Model
 {
     public class User : IdentityUser<Guid>
     {
-        public string Username { get; set; }
+        public string? FirstName { get; set; }
 
-        public string password { get; set; }
+        public string? LastName { get; set; }
 
     }
 }

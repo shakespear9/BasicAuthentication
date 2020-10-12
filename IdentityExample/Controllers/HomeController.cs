@@ -15,18 +15,24 @@ namespace IdentityExample.Controllers
     public class HomeController : Controller
     {
 
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        //private readonly UserManager<IdentityUser> _userManager;
+        //private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<User> _roleManager;
 
         public HomeController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,RoleManager<User> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
         public IActionResult Index()
         {
+
+           
             return View();
         }
 
@@ -44,6 +50,8 @@ namespace IdentityExample.Controllers
         public async Task<IActionResult> Login(string username, string password)
         {
             /// login functionality
+
+           
 
             var user = await _userManager.FindByNameAsync(username);
 
@@ -72,16 +80,26 @@ namespace IdentityExample.Controllers
         public async Task<IActionResult> Register(string username, string password)
         {
             /// register functionality
-            var user = new IdentityUser
+            //var user = new IdentityUser
+            //{
+            //    UserName = username,
+            //    Email = ""
+            //};
+
+            var user = new User
             {
                 UserName = username,
-                Email = ""
+                FirstName = "Nuttakorn",
+                LastName = "Tedthong"
+                //password = password
+
             };
 
 
-            var result = await _userManager.CreateAsync(user,password);
+            var result = await _userManager.CreateAsync(user, password);
 
-            if (result.Succeeded) {
+            if (result.Succeeded)
+            {
 
                 var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
 

@@ -63,9 +63,16 @@ namespace BasicAuthentication
                 //});
 
                 config.AddPolicy("Admin", policyBuilder => policyBuilder.RequireClaim(ClaimTypes.Role, "Admin"));
+
+
+                //config.AddPolicy("Admin", policyBuilder => policyBuilder.RequireClaim(ClaimTypes., "Admin"));
                 //config.AddPolicy("Admin", policyBuilder => policyBuilder.RequireRole("Admin"));
 
-                    
+
+
+
+                //config.AddPolicy("Admin Access", policy => policy.RequireRole)
+
 
 
                 config.AddPolicy("Claim.DoB", policyBuilder =>
@@ -78,8 +85,12 @@ namespace BasicAuthentication
             });
 
 
+            
+
             // Add Handler to Service
             services.AddScoped<IAuthorizationHandler,CustomerRequireClaimHandler>();
+
+            //services.addSing
 
 
             services.AddControllersWithViews();
@@ -112,10 +123,6 @@ namespace BasicAuthentication
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapGet("/", async context =>
-                //{
-                //    await context.Response.WriteAsync("Hello World!");
-                //});
                 endpoints.MapDefaultControllerRoute(); 
 
             });

@@ -44,6 +44,7 @@ namespace Authentication.Controllers
 
         public IActionResult Authenticate()
         {
+
             var grandmaClaims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name,"Bob"),
@@ -56,8 +57,8 @@ namespace Authentication.Controllers
 
             var licenseClaims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Email , "Bob@fmail.com"),
-                new Claim(ClaimTypes.Email , "Bob@fmail.com")
+                new Claim(ClaimTypes.Name , "Bob K Foo"),
+                new Claim("Driving License" , "A+")
             };
 
             var grandmaIdentity = new ClaimsIdentity(grandmaClaims,"Grandma Identity");
@@ -67,6 +68,8 @@ namespace Authentication.Controllers
             var userPrincipal = new ClaimsPrincipal(new[] { grandmaIdentity,licenseIdentity });  //Collection of Identity
 
             HttpContext.SignInAsync(userPrincipal);
+
+            //HttpContext.User.Role
 
             return RedirectToAction("Index");
 

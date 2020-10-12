@@ -14,8 +14,8 @@ namespace IdentityExample.Model
 
 
     // if using your own class 
-    //public class AppDbContext : IdentityDbContext<User,Role,Guid>
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<User, Role, Guid>
+    //public class AppDbContext : IdentityDbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) 
             : base (options)
