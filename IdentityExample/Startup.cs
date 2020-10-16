@@ -11,16 +11,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 namespace IdentityExample
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -37,7 +39,7 @@ namespace IdentityExample
 
             services.AddDbContext<AppDbContext>(config =>
             {
-                config.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                config.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             });
 
 
@@ -51,6 +53,8 @@ namespace IdentityExample
                 config.Password.RequireDigit = false;
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
+                config.SignIn.RequireConfirmedEmail = true;
+              
 
             })
                 .AddEntityFrameworkStores<AppDbContext>()
@@ -59,17 +63,17 @@ namespace IdentityExample
 
 
 
-            services.AddIdentity<IdentityUser, IdentityRole>(config =>
-            {
+            //services.AddIdentity<IdentityUser, IdentityRole>(config =>
+            //{
 
-                config.Password.RequiredLength = 4;
-                config.Password.RequireDigit = false;
-                config.Password.RequireNonAlphanumeric = false;
-                config.Password.RequireUppercase = false;
+            //    config.Password.RequiredLength = 4;
+            //    config.Password.RequireDigit = false;
+            //    config.Password.RequireNonAlphanumeric = false;
+            //    config.Password.RequireUppercase = false;
 
-            })
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+            //})
+            //    .AddEntityFrameworkStores<AppDbContext>()
+            //    .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(config =>
             {
@@ -78,7 +82,13 @@ namespace IdentityExample
             });
 
 
+            var mailKitOptions = _configuration.GetSection("Email").Get<MailKitOptions>();
+
+            services.AddMailKit(config => config.UseMailKit(mailKitOptions)); // .Get use to Type Conversion to specific generic type
+
                services.AddControllersWithViews();
+
+         
 
         }
 

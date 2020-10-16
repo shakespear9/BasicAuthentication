@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Basic.CustomerPolicyProvider;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,6 +17,7 @@ namespace Authentication.Controllers
 
         public HomeController(IAuthorizationService authorizationService)
         {
+            // Inject with Constructor
             _authorizationService = authorizationService;
         }
         public IActionResult Index()
@@ -23,25 +25,43 @@ namespace Authentication.Controllers
             return View();
         }
 
+
+
         [Authorize] /// guard an action = are you allowed ?
         public IActionResult Secret()
         {
             return View();
         } 
         
-        [Authorize(Policy = "Claim.DoB")] /// guard an action = are you allowed ?
+
+
+        [Authorize(Policy = "Claim.DoB")]
         public IActionResult SecretPolicy()
         {
             return View("Secret");
         } 
         
         
-        [Authorize(Roles = "Admin")] /// guard an action = are you allowed ?
+
+        [Authorize(Roles = "Admin")] 
         public IActionResult SecretRole()
         {
             return View("Secret");
         }
+        
+        [SecurityLevel(5)] 
+        public IActionResult SecretLevel()
+        {
+            return View("Secret");
+        }
 
+         [SecurityLevel(10)]
+        public IActionResult SecretHigherLevel()
+        {
+            return View("Secret");
+        }
+
+        [AllowAnonymous]
         public IActionResult Authenticate()
         {
 
@@ -51,6 +71,7 @@ namespace Authentication.Controllers
                 new Claim(ClaimTypes.Email ,"Bob@fmail.com"),
                 new Claim(ClaimTypes.DateOfBirth ,"11/11/2000"),
                 new Claim(ClaimTypes.Role ,"Admin"),
+                new Claim(DynamicPolicies.SecurityLevel,"7"),
                 new Claim("Grandma.Says" ,"Very nice boi.")
 
             };
@@ -80,15 +101,15 @@ namespace Authentication.Controllers
             [FromServices] IAuthorizationService authorizationService)
         {
 
-            //FromService Dependency Injection in Method
+            //FromService Dependency Injection with Method
 
             var builder = new AuthorizationPolicyBuilder("Schema");
             var customPolicy = builder.RequireClaim("Hello").Build();
 
             //await _authorizationService.AuthorizeAsync(User, "Claim.DoB"); //HttpContext.User
-            var result = await _authorizationService.AuthorizeAsync(User, customPolicy); //HttpContext.User
+            var authResult = await authorizationService.AuthorizeAsync(User, customPolicy); //HttpContext.User
 
-            if(result.Succeeded)
+            if(authResult.Succeeded)    
             {
                 return View("Index");
             }
