@@ -42,7 +42,7 @@ namespace IdentityExample
                 config.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             });
 
-
+            
 
             //AddIdentity registers the services
             // If using your own class you can specify at Generic of AddIdentity and also Add Generic of your own class to AppDbContext to Identity Which Class we are going to use as User
@@ -58,7 +58,7 @@ namespace IdentityExample
 
             })
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();  /// Token for use to reset password, email etc.
+                .AddDefaultTokenProviders();  /// Token for use to generate reset password, email etc.
 
 
 

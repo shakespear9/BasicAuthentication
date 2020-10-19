@@ -31,7 +31,7 @@ namespace IdentityExample.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailService = emailService;
+            _emailService = emailService;   
             //_roleManager = roleManager;
         }
         public IActionResult Index()

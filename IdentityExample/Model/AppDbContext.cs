@@ -22,5 +22,6 @@ namespace IdentityExample.Model
         {
 
         }
+
     }
 }

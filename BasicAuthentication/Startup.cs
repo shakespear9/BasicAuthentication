@@ -119,8 +119,8 @@ namespace BasicAuthentication
                 .Build();
 
                 // global Authorization Atrribute/Filter
-
-                //config.Filters.Add(new AuthorizeFilter(defaultAuthPolicy));
+                // Add Authorize to every actions 
+                // config.Filters.Add(new AuthorizeFilter(defaultAuthPolicy));
 
             });
 
